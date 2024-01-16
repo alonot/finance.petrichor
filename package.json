@@ -22,6 +22,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"emailjs": "^4.0.3",
 		"nodemailer": "^6.9.8"
 	}
 }

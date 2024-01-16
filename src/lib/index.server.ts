@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import { SMTPClient } from 'emailjs';
 
 export let password = '';
 // export const password = "1234567890";
@@ -16,15 +16,23 @@ export function generateRandomString() {
 }
 
 
-let mail = nodemailer.createTransport({
-    service: 'gmail',
-    port: 465,
-    secure: false,
-    auth: {
-      user: 'verify.petrichor@gmail.com',
-      pass: process.env.emailpass
-    }
-  });
+// let mail = nodemailer.createTransport({
+//     service: 'gmail',
+//     port: 465,
+//     secure: false,
+//     auth: {
+//       user: 'verify.petrichor@gmail.com',
+//       pass: process.env.emailpass
+//     }
+//   });
+
+const client = new SMTPClient({
+	user: 'user',
+	password: 'password',
+	host: 'smtp.your-email.com',
+	ssl: true,
+});
+
 
 export function newP(){
     console.log("k", process.env.emailpass)
@@ -32,16 +40,15 @@ export function newP(){
     console.log(`http://finance.petrichor.events/${password}`)
     let mailOptions = {
         from: 'verify.petrichor@gmail.com',
-        to: ['petrichor@iitpkd.ac.in', '112201015@smail.iitpkd.ac.in'],
+        to: 'petrichor@iitpkd.ac.in, 112201015@smail.iitpkd.ac.in',
         subject: 'Finance Link',
         text: `https://finance.petrichor.events/${password}`
     };
         
-    mail.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
+    client.send(
+        mailOptions,
+        (err, message) => {
+            console.log(err || message);
         }
-    });
+    );
 }
