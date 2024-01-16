@@ -25,8 +25,9 @@ let mail = nodemailer.createTransport({
   });
 
 export function newP(){
+    console.log("k", process.env.emailpass)
     password = generateRandomString();
-    console.log(password)
+    console.log(`http://finance.petrichor.events/${password}`)
     let mailOptions = {
         from: 'verify.petrichor@gmail.com',
         to: ['petrichor@iitpkd.ac.in', '112201015@smail.iitpkd.ac.in'],
