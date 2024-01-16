@@ -27,9 +27,9 @@ export function generateRandomString() {
 //   });
 
 const client = new SMTPClient({
-	user: 'user',
-	password: 'password',
-	host: 'smtp.your-email.com',
+	user: 'verify.petrichor@gmail.com',
+	password: process.env.emailpass,
+	host: 'smtp.gmail.com',
 	ssl: true,
 });
 
@@ -37,7 +37,7 @@ const client = new SMTPClient({
 export function newP(){
     console.log("k", process.env.emailpass)
     password = generateRandomString();
-    console.log(`http://finance.petrichor.events/${password}`)
+    console.log(`https://finance.petrichor.events/${password}`)
     let mailOptions = {
         from: 'verify.petrichor@gmail.com',
         to: 'petrichor@iitpkd.ac.in, 112201015@smail.iitpkd.ac.in',
