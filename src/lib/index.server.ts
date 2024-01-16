@@ -18,6 +18,8 @@ export function generateRandomString() {
 
 let mail = nodemailer.createTransport({
     service: 'gmail',
+    port: 465,
+    secure: false,
     auth: {
       user: 'verify.petrichor@gmail.com',
       pass: process.env.emailpass
