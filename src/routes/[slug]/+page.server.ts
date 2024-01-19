@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
     if (params.slug != process.env.pass){
         error(404, {message: 'Not Found'})
     }
-	const res = await fetch('http://petrichor-backend.vercel.app/internal/unvertrid')
+	const res = await fetch('https://petrichor-backend.vercel.app/internal/unvertrid')
     const result = await res.json()
     return {data: result}
 };
