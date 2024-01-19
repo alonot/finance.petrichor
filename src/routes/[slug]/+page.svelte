@@ -13,7 +13,7 @@
     }
 
     verified.forEach(async (v) => {
-        let res = await POST('http://petrichor-backend.vercel.app/internal/verifyTR', {
+        let res = await POST('https://petrichor-backend.vercel.app/internal/verifyTR', {
             TransactionId: v
         })
         let result = await res.json()
