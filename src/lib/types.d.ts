@@ -2,7 +2,17 @@ export type Payment = {
     name: string,
     transId: string,
     amount: number,
-    phone: string,
+    CA: string,
+    parts: number,
+    verified: boolean
+}
+
+export type Vtransaction = {
+    event:string,
+    name: string,
+    transId: string,
+    amount: number,
+    CA: string,
     parts: number,
     verified: boolean
 }
@@ -14,16 +24,10 @@ export type member = {
     CA: string
 }
 
-export type data = {
-    data: [
-        {
-            name: string,
-            participants: [
-                {
-                    user: Payment,
-                    members: member[]
-                }
-            ]
-        }
-    ]
+export type Data = {[event: string] : transaction[]}
+
+
+export type transaction = {
+    members: member[],
+    payment: Payment
 }

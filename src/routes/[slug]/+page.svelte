@@ -1,137 +1,28 @@
 <script lang="ts">
+    import Loading from "$lib/components/Loading.svelte";
     import PopUpBox from "$lib/components/PopUpBox.svelte";
-    import { POST } from "$lib/index";
-    import { PopUp} from "$lib/PopUp";
-    import type { data, member } from "$lib/types";
-    export let data1: data;
+    import { POST, reloadData } from "$lib/index";
+    import { PopUp } from "$lib/PopUp";
+    import type { Data, member, transaction, Vtransaction } from "$lib/types";
+    import { onMount } from "svelte";
+    export let data: any;
 
-    const eventList = [
-        "F3: Fireless Food Fiesta",
-        "BRUSHED BRILLIANCE",
-        "Meta Monologues",
-        "Voicestra",
-        "Fashion Frenzy ",
-        "Waste to wow",
-        "Dynamic Duet",
-        "ChoreoClash",
-        "BGMI Showdown",
-        "KATHA - where words become world",
-        "CODM: Clash of Champions",
-        "KAVYA - weaving verses, crafting dreams",
-        "DROP THE BEAT",
-        "Pixel Palette",
-        "Groove Mania",
-        "Click n' Roll: A Showcase of Frames",
-        "Enigma - The General Quiz",
-        "Bandwagon",
-        "Sportify - The SpEnt Quiz",
-        "Valorant",
-        "Treasure Hunt",
-        "Simulate To The Moon",
-        "Clench Bot",
-        "AlgoTrek",
-        "Drone Dash",
-        "Game Forge",
-        "Kampan ",
-        "Trade-a-thon 2.0",
-        "WebMosiac",
-        "Labyrinth 2.0",
-        "Eggstravaganza Drop Challenge",
-        "Hover hero challenge",
-        "Quizzanaire - School Quiz",
-        "Robowar",
-        "ChipCraft",
-        "AI Workshop",
-        "Robotics",
-        "Product Management",
-        "Reinforcement Learning",
-        "Startup and Entrepreneurship",
-        "Measurement Principles and Uncertainty Analysis",
-        "Competitive Programming",
-    ];
-    let data = {
-        data: [
-            {
-                name: "F3: Fireless Food Fiesta",
-                participants: [
-                    {
-                        // team: "Team1",
-                        user: {
-                            name: "hfj",
-                            transID: "hfj",
-                            amount: 1234,
-                            phone: "hfj",
-                            parts: 1234,
-                            verified: true,
-                        },
-                        members: [
-                            {
-                                name: "hey",
-                                email: "aj@gmail",
-                                phone: "12345",
-                                CA: "",
-                            },
-                            {
-                                name: "hey",
-                                email: "aj@gmail",
-                                phone: "12345",
-                                CA: "",
-                            },
-                            {
-                                name: "hey",
-                                email: "aj@gmail",
-                                phone: "12345",
-                                CA: "",
-                            },
-                        ],
-                    },
-                ],
-            },
-            {
-                name: "Competitive Programming",
-                participants: [
-                    {
-                        team: "Team1",
-                        user: {
-                            name: "klsdja;f",
-                            transID: "klsdja;f",
-                            amount: 47,
-                            phone: "klsdja;f",
-                            parts: 47,
-                            verified: false,
-                        },
-                        members: [
-                            {
-                                name: "jfa",
-                                email: "dsjfkl",
-                                phone: "12345",
-                                CA: "",
-                            },
-                            {
-                                name: "jfa",
-                                email: "dsjfkl",
-                                phone: "12345",
-                                CA: "",
-                            },
-                            {
-                                name: "jfa",
-                                email: "dsjfkl",
-                                phone: "12345",
-                                CA: "",
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-    };
+    let eventData: Data = data.data;
+    let eventList: string[] = Object.keys(eventData);
+    let verifiedPayments: Vtransaction[] = data.verified;
+    let unverifiedPayments: Vtransaction[] = data.unverified;
     let verified: string[] = [];
     let consol = "";
+    let loading = true;
+    onMount(() => {
+        loading = false;
+    });
     let state = "Unverified";
     let PopUpObj = new PopUp([], false);
-    function handleChange(event: Event) {
-        const target = event.target as HTMLSelectElement;
+    function handleChange(e: Event) {
+        const target = e.target as HTMLSelectElement;
         state = target.value;
+        console.log(state);
     }
     const displayPopUp = (members: member[]) => {
         PopUpObj.members = members;
@@ -140,215 +31,225 @@
     };
 </script>
 
-{#if verified.length > 0}
-    <button
-        class="submit"
-        on:click={() => {
-            consol = "";
-            if (
-                !confirm(
-                    "Do you really really want to submit. This is irreversible.\nParticipants will get an email regarding their verification in the events immediately",
-                )
-            ) {
-                return;
-            }
-
-            // verified.forEach(async (v) => {
-            POST("https://petrichor-backend.vercel.app/internal/verifyTR", {
-                transaction_ids: verified,
-            })
-                .then((res) => res.json())
-                .then((result) => {
-                    if (result.status == 200) {
-                        //result.succes
-                        //!result.success => failed trs[]
-                        // consol += `${v} verified\n`;
-                    } else if (result.status == 404) {
-                        // consol += `${v} failed\n`;
-                    }
-                    console.log(result);
-                });
-            // });
-        }}>Submit</button
-    >
-{/if}
 
 <!-- <textarea value={consol}></textarea> -->
 
-<select on:change={handleChange}>
-    <option value="Unverified">Unverified</option>
-    <option value="Verified">Verified</option>
-    {#each eventList as e}
-        <option value={e}>{e}</option>
-    {/each}
-</select>
+<!-- <div class="gradient-bg">
+    <div class="gradients-container extra">
+        <div id="g1-3_1" class="g" />
+        <div id="g1-2_1" class="g" />
+        <div id="g1-1_1" class="g" />
+        <div id="g1-7_1" class="g" />
+    </div>
+</div> -->
 
-<h1>{state}</h1>
-<div class="tb">
-    {#if state == "Verified"}
-        <table>
-            <tr>
-                <th>Event</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Transaction ID</th>
-                <th>No. of Participants</th>
-                <th>Total Amount</th>
-            </tr>
-            {#each data.data as d}
-                {#each d.participants as participant}
-                    {#if participant.user.verified}
-                        <tr>
-                            <td>{d.name}</td>
-                            <td>{participant.user.name}</td>
-                            <td>{participant.user.phone}</td>
-                            <td>{participant.user.transID}</td>
-                            <td>{participant.user.parts}</td>
-                            <td
-                                >{participant.user.amount *
-                                    participant.user.parts}</td
-                            >
-                        </tr>
-                    {/if}
+<div class="main">
+    {#if verified.length > 0}
+        <button
+            class="submit"
+            on:click={() => {
+                consol = "";
+                if (
+                    !confirm(
+                        "Do you really really want to submit. This is irreversible.\nParticipants will get an email regarding their verification in the events immediately",
+                    )
+                ) {
+                    return;
+                }
+                loading = true;
+    
+                // verified.forEach(async (v) => {
+                POST("http://127.0.0.1:8000/internal/verifyTR/", {
+                    transaction_ids: verified,
+                })
+                    .then((res) => res.json())
+                    .then(async (result) => {
+                        if (result.status == 200) {
+                            //result.succes
+                            alert(`Transaction Ids verified and mail has been sent. \n\
+                            Total requests sent : ${verified.length}\n\
+                            requests : ${verified}\n\
+                            No of trasactions, server failed to verify = ${result.failed_transactions.length};\n\
+                            Those transactions are: ${result.failed_transactions}`);
+                            //!result.success => failed trs[]
+                            const res = await reloadData();
+                            verifiedPayments = res.verified;
+                            unverifiedPayments = res.unverified;
+                            eventData = res.data;
+                            console.log(eventData);
+                            // consol += `${v} verified\n`;
+                        } else if (result.status == 404) {
+                            // consol += `${v} failed\n`;
+                        }
+                        loading = false;
+                        // console.log(result);
+                    })
+                    .catch((err) => {
+                        loading = false;
+                        console.log(err);
+                    });
+                // });
+            }}>Submit</button
+        >
+    {/if}
+    <select on:change={handleChange}>
+        <option value="Unverified">Unverified</option>
+        <option value="Verified">Verified</option>
+        {#each eventList as e}
+            <option value={e}>{e}</option>
+        {/each}
+    </select>
+
+    <h1>{state}</h1>
+    <div class="tb">
+        {#if state == "Verified"}
+            <table>
+                <tr>
+                    <th>Event</th>
+                    <th>Name</th>
+                    <th>CACode</th>
+                    <th>Transaction ID</th>
+                    <th>No. of Participants</th>
+                    <th>Total Amount</th>
+                </tr>
+                {#each verifiedPayments as payment}
+                    <tr>
+                        <td>{payment.event}</td>
+                        <td>{payment.name}</td>
+                        <td>{payment.CA}</td>
+                        <td>{payment.transId}</td>
+                        <td>{payment.parts}</td>
+                        <td>{payment.amount}</td>
+                    </tr>
                 {/each}
-            {/each}
-        </table>
-    {:else if state == "Unverified"}
-        <table>
-            <tr>
-                <th>Event</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Transaction ID</th>
-                <th>No. of Participants</th>
-                <th>Total Amount</th>
-                <th>Verified</th>
-            </tr>
-            {#each data.data as d}
-                {#each d.participants as participant}
-                    {#if !participant.user.verified}
-                        <tr>
-                            <td>{d.name}</td>
-                            <td>{participant.user.name}</td>
-                            <td>{participant.user.phone}</td>
-                            <td>{participant.user.transID}</td>
-                            <td>{participant.user.parts}</td>
-                            <td
-                                >{participant.user.amount *
-                                    participant.user.parts}</td
-                            >
+            </table>
+        {:else if state == "Unverified"}
+            <table>
+                <tr>
+                    <th>Event</th>
+                    <th>Name</th>
+                    <th>CACode</th>
+                    <th>Transaction ID</th>
+                    <th>No. of Participants</th>
+                    <th>Total Amount</th>
+                    <th>Verified</th>
+                </tr>
+                {#each unverifiedPayments as payment}
+                    <tr>
+                        <td>{payment.event}</td>
+                        <td>{payment.name}</td>
+                        <td>{payment.CA}</td>
+                        <td>{payment.transId}</td>
+                        <td>{payment.parts}</td>
+                        <td>{payment.amount}</td>
+
+                        <td
+                            ><input
+                                type="checkbox"
+                                on:change={(e) => {
+                                    // @ts-ignore
+                                    if (e?.target?.checked) {
+                                        verified.push(payment.transId);
+                                        verified = verified;
+                                    } else {
+                                        verified = verified.filter(
+                                            (v) => v != payment.transId,
+                                        );
+                                    }
+                                }}
+                            /></td
+                        >
+                    </tr>
+                {/each}
+            </table>
+        {:else}
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>CACode</th>
+                    <th>Transaction ID</th>
+                    <th>No. of Participants</th>
+                    <th>Total Amount</th>
+                    <th>Verified</th>
+                    <th>Team</th>
+                </tr>
+                {#each eventData[state] as d}
+                    <tr>
+                        <td>{d.payment.name}</td>
+                        <td>{d.payment.CA}</td>
+                        <td>{d.payment.transId}</td>
+                        <td>{d.payment.parts}</td>
+                        <td>{d.payment.amount}</td>
+                        {#if d.payment.verified}
+                            <td><input type="checkbox" checked disabled /></td>
+                        {:else}
                             <td
                                 ><input
                                     type="checkbox"
                                     on:change={(e) => {
                                         // @ts-ignore
                                         if (e?.target?.checked) {
-                                            verified.push(
-                                                participant.user.transID,
-                                            );
+                                            verified.push(d.payment.transId);
                                             verified = verified;
                                         } else {
                                             verified = verified.filter(
-                                                (v) =>
-                                                    v !=
-                                                    participant.user.transID,
+                                                (v) => v != d.payment.transId,
                                             );
                                         }
                                     }}
                                 /></td
                             >
-                        </tr>
-                    {/if}
+                        {/if}
+                        <td
+                            ><button on:click={() => displayPopUp(d.members)}
+                                >View</button
+                            ></td
+                        >
+                    </tr>
                 {/each}
-            {/each}
-        </table>
-    {:else}
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Transaction ID</th>
-                <th>No. of Participants</th>
-                <th>Total Amount</th>
-                <th>Verified</th>
-                <th>Team</th>
-            </tr>
-            {#each data.data as d}
-                {#if d.name == state}
-                    {#each d.participants as participant}
-                        <tr>
-                            <td>{participant.user.name}</td>
-                            <td>{participant.user.phone}</td>
-                            <td>{participant.user.transID}</td>
-                            <td>{participant.user.parts}</td>
-                            <td
-                                >{participant.user.amount *
-                                    participant.user.parts}</td
-                            >
-                            {#if participant.user.verified}
-                                <td
-                                    ><input
-                                        type="checkbox"
-                                        checked
-                                        disabled
-                                    /></td
-                                >
-                            {:else}
-                                <td
-                                    ><input
-                                        type="checkbox"
-                                        on:change={(e) => {
-                                            // @ts-ignore
-                                            if (e?.target?.checked) {
-                                                verified.push(
-                                                    participant.user.transID,
-                                                );
-                                                verified = verified;
-                                            } else {
-                                                verified = verified.filter(
-                                                    (v) =>
-                                                        v !=
-                                                        participant.user
-                                                            .transID,
-                                                );
-                                            }
-                                        }}
-                                    /></td
-                                >
-                            {/if}
-                            <td
-                                ><button
-                                    on:click={() =>
-                                        displayPopUp(participant.members)}
-                                    >View</button
-                                ></td
-                            >
-                        </tr>
-                    {/each}
-                {/if}
-            {/each}
-        </table>
-    {/if}
+            </table>
+        {/if}
+    </div>
 </div>
+
+<Loading spinning={loading} />
 
 {#if PopUpObj.isOn}
     <PopUpBox bind:PopUpObj />
 {/if}
 
 <style>
+    .main{
+        z-index: 2;
+        position: relative;
+    }
+    select{
+        padding: 10px;
+        background-color: rgba(191, 248, 248, 0.499);
+    }
     .submit {
         position: fixed;
         right: 10vw;
         font-size: 50px;
     }
     table {
-        border-spacing: 5rem 1rem;
+        border: 2px solid rgba(25, 25, 179, 0.562);
+        background-color: rgba(29, 70, 120, 0.374);
+    }
+
+    th {
+        padding: 30px;
+        height: 100%;
+        background-color: rgba(40, 97, 171, 0.684);
     }
     td {
         text-align: center;
+        padding: 10px 20px;
+        border-right: 2px rgba(104, 151, 187, 0.623) solid;
     }
     .tb {
         display: flex;
+        z-index: 3;
         justify-content: center;
     }
     h1 {

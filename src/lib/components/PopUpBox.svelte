@@ -25,14 +25,12 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Phone</th>
-                    <th>CA</th>
                 </tr>
-                {#each members as member}
+                {#each members as member,ind}
                     <tr>
-                        <td>{member.name}</td>
+                        <td>{ind == 0? "Registered By:" :""}{member.name}</td>
                         <td>{member.email}</td>
                         <td>{member.phone}</td>
-                        <td>{member.CA}</td>
                     </tr>
                 {/each}
             </table>
@@ -48,8 +46,15 @@
 </dialog>
 
 <style>
+    table{
+        padding: 20px;
+    }
     td, th{
         text-align: center;
+        color: #0fd8d5a0;
+    }
+    th{
+        color: rgb(204, 0, 255);
     }
     button {
         color: white;
@@ -60,6 +65,7 @@
     p {
         text-align: center;
         margin-top: 10px;
+        color: bisque;
         margin-bottom: 5px;
         font-weight: bold;
     }
@@ -93,7 +99,7 @@
         margin: 0 30px;
         display: flex;
         flex-direction: column;
-        background-color: black;
+        background-color: rgba(7, 7, 7, 0.79);
     }
 
     .Box {
