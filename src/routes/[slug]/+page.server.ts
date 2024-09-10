@@ -4,10 +4,10 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, fetch }) => {
-    if (params.slug != process.env.pass){
-        error(404, {message: 'Not Found'})
-    }
-	const res = await fetch('https://petrichor-backend.vercel.app/internal/unvertrid')
-    const result = await res.json()
-    return {data: result}
+    // if (params.slug != process.env.pass){
+    //     error(404, {message: 'Not Found'})
+    // }
+	// const res = await fetch('https://petrichor-backend.vercel.app/internal/sheet/view/')
+    // const result = await res.json()
+    // return {data: result}
 };
