@@ -25,7 +25,20 @@ export type member = {
 }
 
 export type Data = {[event: string] : transaction[]}
+export type userData = User[]
 
+
+export type User = {
+    name:string,
+    phone:string,
+    college:string,
+    email:string,
+    gradyear:number,
+    stream:string,
+    CA:string,
+    CAregistrations:string,
+    joined:string,
+}
 
 export type transaction = {
     members: member[],

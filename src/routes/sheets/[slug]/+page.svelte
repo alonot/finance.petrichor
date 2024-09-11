@@ -1,7 +1,7 @@
 <script lang="ts">
     import Loading from "$lib/components/Loading.svelte";
     import PopUpBox from "$lib/components/PopUpBox.svelte";
-    import { POST, reloadData } from "$lib/index";
+    import { backend_url, POST, reloadData } from "$lib/index";
     import { PopUp } from "$lib/PopUp";
     import type { Data, member, transaction, Vtransaction } from "$lib/types";
     import { onMount } from "svelte";
@@ -59,7 +59,7 @@
                 loading = true;
     
                 // verified.forEach(async (v) => {
-                POST("http://127.0.0.1:8000/internal/verifyTR/", {
+                POST(`${backend_url}internal/verifyTR/`, {
                     transaction_ids: verified,
                 })
                     .then((res) => res.json())

@@ -1,5 +1,7 @@
 import type { Data, Vtransaction } from "./types"
 
+export const backend_url = 'https://petrichor-backend.vercel.app/'
+
 export async function POST(url: string, body: any) {
     return await fetch(url, {
         method: 'POST',
@@ -12,7 +14,7 @@ export async function POST(url: string, body: any) {
 }
 
 export async function reloadData(){
-    const res = await POST('http://127.0.0.1:8000/internal/sheets/view/',{})
+    const res = await POST(`${backend_url}internal/sheets/view/`,{})
     const result = await res.json()
     const verified:Vtransaction[] = [];
     const unverified:Vtransaction[] = [];

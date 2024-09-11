@@ -2,13 +2,14 @@
 import type { Data, Payment, transaction, Vtransaction } from '$lib/types';
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { POST } from '$lib';
+import { backend_url, POST } from '$lib';
 
-export const load: PageServerLoad = async ({ params, fetch }) => {
-    // if (params.slug != process.env.pass){
-    //     error(404, {message: 'Not Found'})
-    // }
-	const res = await POST('http://127.0.0.1:8000/internal/sheets/view/',{})
+export const load: PageServerLoad = async ({ params }) => {
+    if (params.slug != process.env.pass){
+    // if (params.slug != "petrichor"){
+        error(404, {message: 'Not Found'})
+    }
+	const res = await POST(`${backend_url}internal/sheets/view/`,{})
     const result = await res.json()
     const verified:Vtransaction[] = [];
     const unverified:Vtransaction[] = [];
