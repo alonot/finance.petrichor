@@ -1,20 +1,15 @@
-import type { Data, Vtransaction } from "./types"
+// import { password, newP } from '$lib/index.server';
+import type { Data, Payment, transaction, Vtransaction } from '$lib/types';
+import { error } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
+import { backend_url, POST } from '$lib';
 
-export const backend_url = 'https://petrichor-backend.vercel.app/'
-
-export async function POST(url: string, body: any) {
-    return await fetch(url, {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify(body)
-    })
-}
-
-export async function reloadData(){
-    const res = await POST(`${backend_url}internal/sheets/view/`,{})
+export const load: PageServerLoad = async ({ params }) => {
+    if (params.slug != process.env.pass){
+    // if (params.slug != "petrichor"){
+        error(404, {message: 'Not Found'})
+    }
+	const res = await POST(`${backend_url}internal/sheets/view/`,{})
     const result = await res.json()
     const verified:Vtransaction[] = [];
     const unverified:Vtransaction[] = [];
@@ -32,6 +27,5 @@ export async function reloadData(){
             })
         })
     }
-    // console.log(result.data)
     return {data: result.data,"verified":verified,"unverified":unverified}
-}
+};
