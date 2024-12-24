@@ -1,11 +1,11 @@
 // Credits : https://www.youtube.com/watch?v=vHHLLJA0b70&t=13141s
 
 
-// import * as rollup from "rollup/dist/rollup.browser.es.js"
 import type { Component } from '$lib/types';
 import { API, default_event, POST, pre_components } from '$lib';
 import {compile} from  "svelte/compiler";
-// import { compile as mdcompile } from "mdsvex"
+import { compile as mdcompile } from "mdsvex"
+import * as rollup from "rollup/dist/rollup.browser.es.js"
 
 import type { PageServerLoad } from './$types';
 import { fail, error } from '@sveltejs/kit';
@@ -64,66 +64,66 @@ export const actions = {
             type: 'mdx'
         }])
 
-        // const bundle = await rollup.rollup({
-        //     input:"./markdown.mdx",
-        //     plugins: [
-        //         {
-        //             name: 'repl-plugin',
-        //             resolveId(importee:string, importer:string) {
-        //                 // Handle imports from 'svelte'
-        //                 if (importer === "./Component.svelte") {
-        //                     if (importee.endsWith("disclose-version")) return ""
-        //                     console.log(importee)
-        //                 }
-        //                 if (importee === 'svelte') return `${CDN_URL}/svelte/index.mjs`;
+        const bundle = await rollup.rollup({
+            input:"./markdown.mdx",
+            plugins: [
+                {
+                    name: 'repl-plugin',
+                    resolveId(importee:string, importer:string) {
+                        // Handle imports from 'svelte'
+                        if (importer === "./Component.svelte") {
+                            if (importee.endsWith("disclose-version")) return ""
+                            console.log(importee)
+                        }
+                        if (importee === 'svelte') return `${CDN_URL}/svelte/index.mjs`;
             
-        //                 if (importee.startsWith('svelte/')) {
-        //                     return `${CDN_URL}/svelte/${importee.slice(7)}/index.mjs`;
-        //                 }
+                        if (importee.startsWith('svelte/')) {
+                            return `${CDN_URL}/svelte/${importee.slice(7)}/index.mjs`;
+                        }
             
-        //                 // Handle relative imports for Svelte components
-        //                 if (components_map.has(importee)) return importee;
+                        // Handle relative imports for Svelte components
+                        if (components_map.has(importee)) return importee;
             
-        //                 // Handle imports from the CDN
-        //                 if (importer && importer.startsWith(CDN_URL)) {
-        //                     const resolved = new URL(importee, importer).href;
-        //                     return resolved.endsWith('.mjs') ? resolved : `${resolved}/index.mjs`;
-        //                 }
+                        // Handle imports from the CDN
+                        if (importer && importer.startsWith(CDN_URL)) {
+                            const resolved = new URL(importee, importer).href;
+                            return resolved.endsWith('.mjs') ? resolved : `${resolved}/index.mjs`;
+                        }
             
-        //                 return null; // Other cases are left to Rollup
-        //             },
-        //             async load(id:string) {
-        //                 if (components_map.has(id)) {
-        //                     return components_map.get(id)?.source; // Return component source code
-        //                 }
-        //                 return await fetch_package(id); // Fetch from the CDN
-        //             },
-        //             async transform(code:string, id:string) {
-        //                 if (id.endsWith('.svelte')) {
-        //                     // Compile Svelte to JavaScript
-        //                     const compiled = compile(code, {
-        //                         generate:'dom'
-        //                     });
-        //                     const final_code = compiled.js.code.replace("import \"svelte/internal/disclose-version\";","\n")
-        //                     return final_code;
-        //                     // return compiled.js.code;
-        //                 }
-        //                 if (id.endsWith('.mdx')) {
-        //                     const mk_compiled = await mdcompile(code, {})
-        //                     const compiled = compile(mk_compiled?.code, {
-        //                         generate:'dom'
-        //                     });
-        //                     const final_code = compiled.js.code.replace("import \"svelte/internal/disclose-version\";","\n")
-        //                     return final_code;
-        //                 }
-        //                 return null; // Pass other files unchanged
-        //             },
-        //         },
-        //     ]
+                        return null; // Other cases are left to Rollup
+                    },
+                    async load(id:string) {
+                        if (components_map.has(id)) {
+                            return components_map.get(id)?.source; // Return component source code
+                        }
+                        return await fetch_package(id); // Fetch from the CDN
+                    },
+                    async transform(code:string, id:string) {
+                        if (id.endsWith('.svelte')) {
+                            // Compile Svelte to JavaScript
+                            const compiled = compile(code, {
+                                generate:'dom'
+                            });
+                            const final_code = compiled.js.code.replace("import \"svelte/internal/disclose-version\";","\n")
+                            return final_code;
+                            // return compiled.js.code;
+                        }
+                        if (id.endsWith('.mdx')) {
+                            const mk_compiled = await mdcompile(code, {})
+                            const compiled = compile(mk_compiled?.code, {
+                                generate:'dom'
+                            });
+                            const final_code = compiled.js.code.replace("import \"svelte/internal/disclose-version\";","\n")
+                            return final_code;
+                        }
+                        return null; // Pass other files unchanged
+                    },
+                },
+            ]
             
-        // });
-        // const output: string = ( await bundle.generate({ format: 'esm' })).output[0].code;
-        // return output
+        });
+        const output: string = ( await bundle.generate({ format: 'esm' })).output[0].code;
+        return output
         },
 
     update: async ({ request }) => {
